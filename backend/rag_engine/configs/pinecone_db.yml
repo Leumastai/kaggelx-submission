@@ -1,0 +1,5 @@
+
+pinecone_configs:
+  index_name: xkaggle-rag-project
+  index_metric: cosine
+  embedding_dim: 768

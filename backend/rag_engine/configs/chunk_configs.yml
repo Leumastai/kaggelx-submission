@@ -1,0 +1,5 @@
+
+chunk_configs:
+  chunk_size_large: 350
+  chunk_size_small: 200
+  chunk_overlap: 50
