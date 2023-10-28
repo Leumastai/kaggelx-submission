@@ -1,0 +1,10 @@
+
+[] Implement a robust user db for the project
+[] Implement memory flusher every 24hrs
+[] Verify if mongodb can work for vectordb
+[] Data validation
+[] Use GRPC
+[] Build streamlit app
+[] Deploy on Google cloud AI
+[] Use a DevOps deployment process
+[] Use Kubernetes if you can.

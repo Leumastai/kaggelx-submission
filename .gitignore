@@ -1,0 +1,7 @@
+.ipynb_checkpoints
+.archive
+test.ipynb
+*.env
+*__pycache__
+^.cache
+kagglex-evn

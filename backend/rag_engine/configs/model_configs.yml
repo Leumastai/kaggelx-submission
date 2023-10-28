@@ -1,0 +1,21 @@
+
+## Model Configurations
+model_configs:
+  model_id: meta-llama/Llama-2-13b-chat-hf
+  model_params:
+    task: text-generation
+    max_new_tokens: 768
+    repetition_penalty: 1.1
+    temperature: 0.2
+
+
+## Embeddings Configurationa
+embeddings_configs:
+  embedding_model_id: 
+    - sentence-transformers/all-MiniLM-L6-v2
+    - thenlper/gte-base
+  embedding_model_dim: 
+  - 384
+  - 768
+  embedding_batch_size: 64 #100
+  cache_folder: .cache

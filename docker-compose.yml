@@ -1,0 +1,51 @@
+
+version: '3.9'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 8501:8501
+    # volumes:
+    #   - ./frontend/.env:/app/.env
+    networks:
+      KaggleX:
+        aliases:
+          - frontend.rag
+    depends_on:
+      - backend
+    restart: always
+
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    volumes:
+      - ./backend/rag_engine/.env:/backend/rag_engine/.env
+    networks:
+      KaggleX:
+        aliases:
+          - api.backend
+    restart: always
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #       - driver: nvidia
+    #         count: 1
+    #         capabilities: [gpu]
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['1'] # use gpu device 1
+            capabilities: [gpu]
+
+networks:
+  KaggleX: #external: true use if you ran docker network create Transcription
