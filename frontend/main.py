@@ -76,42 +76,48 @@ def clear_chat_history():
 # Function for generating response from API
 def generate_llama2_response(prompt_input, doc_id):
     bot_response = chat(query=prompt_input, doc_id=doc_id)
+    # bot_response = {"answer": "tpiern"}
     return bot_response
 
 
 if 'doc_uploaded' not in st.session_state.keys():
     st.session_state.doc_uploaded = False
 
+# if 'doc_id' not in st.session_state.keys():
+#     st.session_state.doc_id = False
+
 with st.expander("### **Chat with your Data**", expanded=True):
 
     has_doc_id = st.radio("Do you have a document id from previous session?", ["", "No", "Yes"], index=0)
-
-    # options = ["Yes", "No"]
-    # has_doc_id = st.selectbox("Do you have a document id from previous session?", options)
-
     if has_doc_id == "Yes":
         doc_id = st.text_input("Enter your document id here:")
         st.session_state.doc_id = f"{doc_id}" # save doc_id to session
-        st.session_state.doc_uploaded = False
+        if st.session_state.doc_id:
+            st.session_state.doc_uploaded = True
     
     elif has_doc_id == "No":
-
         st.markdown("***Upload your document to start chatting***")
         uploaded_file = st.file_uploader("Upload your document to start the conversation...", label_visibility="collapsed")
 
-        if not st.session_state.doc_uploaded: #uploaded_file is not None:
-            with st.spinner("Upserting document... Sip a cuppa tea 🤗"):
-                user_doc_id = upload_docs(uploaded_file)
-                doc_id = user_doc_id['user_doc_id']
-                st.session_state.doc_id = f"{doc_id}" # save doc_id to session    
-                st.session_state.doc_uploaded = True
-
-            st.markdown(f"Your document id is **{doc_id}**, Cached data will be deleted after 48hrs.")
-            st.write("You can now start a conversation...")
+        if not st.session_state.doc_uploaded and uploaded_file != None:
+            #if uploaded_file != None:
+                with st.spinner("Upserting document... Sip a cuppa tea 🤗"):
+                    user_doc_id = upload_docs(uploaded_file)
+                    doc_id = user_doc_id['user_doc_id']
+                    # time.sleep(5)
+                    # doc_id ="oprempi354"
+                    st.session_state.doc_id = f"{doc_id}" # save doc_id to session
+        
+                if st.session_state.doc_id:
+                    st.session_state.doc_uploaded = True
+        
+        if 'doc_id' in st.session_state.keys():
+            st.markdown(f"Your document id is **{st.session_state.doc_id}**. Cached data will be deleted after 48hrs.")
+            st.write("You can now start a conversation ...")
 
 print (st.session_state.doc_uploaded)
+print ("doing")
 if st.session_state.doc_uploaded: #doc_id.strip(): # check if variable is an empty string
-# if uploaded_file is not None:
     if "messages" not in st.session_state.keys():
         st.session_state.messages = [{"role": "assistant", "content": "How may I assist you today?"}]
 
