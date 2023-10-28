@@ -37,7 +37,6 @@ class ChatBot():
         # stores reference data to the chat history
         from runner.batch_send import add_data_to_file
         # data.update({"chat_id": ChatBot.__user_uuid__})
-        # data.update({"chat_id": ChatBot.__user_uuid__})
         add_data_to_file(data)
 
     @staticmethod

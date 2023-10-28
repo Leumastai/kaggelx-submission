@@ -92,11 +92,6 @@ class PineconeDB:
                 include_metadata=True,
             )
 
-            # filter={
-            #     "genre": {"$eq": "documentary"},
-            #     "year": 2019
-            # },
-
             return results
 
     def fetch_from_id(self, id: str):

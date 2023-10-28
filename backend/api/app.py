@@ -4,7 +4,8 @@ from runner.chatbot import ChatBot
 from rag_engine.model_initializer import RAGModel
 from rag_engine.embeddings import EmbedChunks
 from rag_engine.flusher import flush, bytes_to_giga_bytes
-from api.schema import ChatSchema, SummarySchema, ChatResponse, SummaryResponse, FileSchema
+from api.schema import ChatSchema, SummarySchema, ChatResponse, SummaryResponse
+from api.utils import save_upload_file, convert_document_to_dict
 
 from fastapi import FastAPI, HTTPException, UploadFile, status, File, Form
 from langchain.llms import HuggingFacePipeline
@@ -12,53 +13,34 @@ from pathlib import Path
 from typing import *
 import logging
 import os
-import shutil
 import torch
 import uuid
 
+### ===================== Initialize model and embeddings ====================
+## ===========================================================================
 
-# export PYTHONPATH=/home/unicconai/Documents/sam's_lab/archive/delete/kagglex:$PYTHONPATH
-
-print ("Running____________________")
 model = RAGModel()
 text_generation_pipeline = model()
 embedding_query = EmbedChunks().embedding_query
 rag_model =  HuggingFacePipeline(pipeline = text_generation_pipeline)
+UPLOAD_DIR = os.path.join(os.getcwd(), "db/input")
 
+
+### ===================== Initialize API =================================
+## =======================================================================
 
 app = FastAPI()
 
-UPLOAD_DIR = os.path.join(os.getcwd(), "db/input")
-
-def save_upload_file(
-    upload_file: UploadFile, destination: FileSchema
-) -> Path:
-    try:
-        with open(destination, "wb") as buffer:
-            shutil.copyfileobj(upload_file.file, buffer)
-    finally:
-        upload_file.file.close()
-        print ("File uploaded sucessfully")
-
-
-def convert_document_to_dict(document):
-    return {
-        'page_content': document.page_content,
-        'metadata': document.metadata
-    }
-
-print ("API Loading ..................................")
+print ("Initializing API....")
 @app.get("/", status_code=status.HTTP_200_OK)
 def home():
     return {"status": "RAG model is up! Endpoints are `/chat` and `/summarize`."}
 
 
 @app.post("/upload_doc", status_code=status.HTTP_200_OK)
-def upload_chat_document(file_path: Optional[UploadFile] = File(...)):
+def upload_chat_document(file_path: UploadFile = File(...)):
 
-    # implement to take in uuid if old user,
     fname = Path(file_path.filename)
-
     doc_id = str(uuid.uuid4())
     destination = os.path.join(UPLOAD_DIR, doc_id+fname.suffix)
 
@@ -73,7 +55,6 @@ def upload_chat_document(file_path: Optional[UploadFile] = File(...)):
     }
 
     ChatBot.store_result(data) # store reference of data
-
     response = {
         "user_doc_id": doc_id
     }
@@ -82,12 +63,10 @@ def upload_chat_document(file_path: Optional[UploadFile] = File(...)):
 
 
 @app.post("/chat", response_model=ChatResponse, status_code=status.HTTP_200_OK)
-# def chatbot(input: ChatSchema, file_path: Optional[UploadFile] = None,):
-def chatbot(user_query: str, doc_id: str = None):# file_path: Optional[UploadFile] = File(None)):
+def chatbot(user_query: str, doc_id: str = None):
     
     for _ in range(2):
-        # try
-
+        try:
             response = ChatBot.chat(user_query, rag_model, embedding_query, doc_id) # send user query to backend
             response['source_documents'] = [convert_document_to_dict(doc) for doc in response['source_documents']],
 
@@ -98,14 +77,14 @@ def chatbot(user_query: str, doc_id: str = None):# file_path: Optional[UploadFil
             }
 
             ChatBot.store_result_chatbot(data, doc_id) # save user db for future reference
-
             return {"answer": response["answer"]}
-        # except RuntimeError as error:
-        #     print (f"Caught an OutOfMemoryError: {error}")
-        #     flush(model, text_generation_pipeline) # if CudaOutofMemoryError, it flushes out the model and pipeline initialization, the reintialize.
-        #     print (bytes_to_giga_bytes(torch.cuda.max_memory_allocated()))
-        # except Exception as reason:
-        #     raise HTTPException(status_code=500, detail=str(reason))
+
+        except RuntimeError as error:
+            print (f"Caught an OutOfMemoryError: {error}")
+            flush(model, text_generation_pipeline) # if CudaOutofMemoryError, it flushes out the model and pipeline initialization, the reintialize.
+            print (bytes_to_giga_bytes(torch.cuda.max_memory_allocated()))
+        except Exception as reason:
+            raise HTTPException(status_code=500, detail=str(reason))
 
 
 @app.post("/summarize", response_model=SummaryResponse, status_code=status.HTTP_200_OK)
@@ -115,21 +94,14 @@ def summary(
 
     if runtype == "raw_text":
         for _ in range(2):
-            # try:
-                # contextual_summary = SummaryBot.summary(
-                #     rag_model, embedding_query, input.context_words,
-                #     input.text, input.query_url, input.runtype)
+            try:
+                contextual_summary = SummaryBot.summary(
+                    rag_model, embedding_query, input.context_words,
+                    input.text, input.query_url, input.runtype)
 
                 contextual_summary = SummaryBot.summary(
                     rag_model, embedding_query, context_words,
                     text, query_url, runtype)
-                
-                # data = {
-                #     "type": "contextual_summarization",
-                #     "on": input.runtype,
-                #     "context": input.context_words,
-                #     "text": input.text, "query_url": input.query_url,
-                #     "summarization": contextual_summary}
 
                 data = {
                     "type": "contextual_summarization",
@@ -141,17 +113,17 @@ def summary(
                 SummaryBot.store_result(data)
                 return {"summarization": contextual_summary}
 
-            # except RuntimeError as error:
-            #     print (f"Caught an OutOfMemoryError: {error}")
-            #     flush(model, text_generation_pipeline)
-            #     bytes_to_giga_bytes(torch.cuda.max_memory_allocated())
-            # except Exception as reason:
-            #     logging.error(f"str{reason}")
-            #     raise HTTPException(status_code=500, detail=str(reason))
+            except RuntimeError as error:
+                print (f"Caught an OutOfMemoryError: {error}")
+                flush(model, text_generation_pipeline)
+                bytes_to_giga_bytes(torch.cuda.max_memory_allocated())
+            except Exception as reason:
+                logging.error(f"str{reason}")
+                raise HTTPException(status_code=500, detail=str(reason))
 
     elif runtype == "file":
         for _ in range(2):
-            # try:
+            try:
                 print (file_path)
                 fname = Path(file_path.filename)
                 destination = os.path.join(UPLOAD_DIR, fname)
@@ -174,12 +146,12 @@ def summary(
                 # implement to remove the file immediately
                 return {"summarization": contextual_summary}
 
-            # except RuntimeError as error:
-            #     print (f"Caught an OutOfMemoryError: {error}")
-            #     flush(model, text_generation_pipeline)
-            #     bytes_to_giga_bytes(torch.cuda.max_memory_allocated())
-            # except Exception as reason:
-            #     raise HTTPException(status_code=500, detail=str(reason))
+            except RuntimeError as error:
+                print (f"Caught an OutOfMemoryError: {error}")
+                flush(model, text_generation_pipeline)
+                bytes_to_giga_bytes(torch.cuda.max_memory_allocated())
+            except Exception as reason:
+                raise HTTPException(status_code=500, detail=str(reason))
 
-    # else:
-    #     raise HTTPException(status_code=400, detail="Invalid runtype")
+    else:
+        raise HTTPException(status_code=400, detail="Invalid runtype")

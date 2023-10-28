@@ -12,8 +12,6 @@ class ChatSchema(BaseModel):
 
 class SummarySchema(BaseModel):
     context_words: str = Field(None, description="context at which user want the summarization to be.")
-    # file: UploadFile = File(...)
-    #file_path: Optional[UploadFile] = File(..., description="Description of file_path")
     runtype: str = Field('raw_text', description="runtype can either be raw_text or file")
     text: Optional[str] = Field(None, description="Required if you're summarizing for a text")
     query_url: Optional[str] = Field(None, description="Required if you're summarizing for a webpage")
@@ -21,7 +19,6 @@ class SummarySchema(BaseModel):
 
 class FileSchema(BaseModel):
     file_path: FilePath
-
 
 class ChatResponse(BaseModel):
     answer: str
