@@ -95,10 +95,7 @@ def summary(
     if runtype == "raw_text":
         for _ in range(2):
             try:
-                contextual_summary = SummaryBot.summary(
-                    rag_model, embedding_query, input.context_words,
-                    input.text, input.query_url, input.runtype)
-
+                
                 contextual_summary = SummaryBot.summary(
                     rag_model, embedding_query, context_words,
                     text, query_url, runtype)

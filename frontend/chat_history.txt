@@ -1,1 +1,3 @@
 assistant: How may I assist you today?
+user: Who are the authors of the paper?
+assistant:  The authors of the paper "Training Transformers" are Martin Popel and Ondrej Bojar.

@@ -65,7 +65,7 @@ def get_text_from_article_url(url):
 #         else:
 
 if __name__ == "__main__":
-
+    # https://techcrunch.com/2023/10/24/apple-government-officials-lend-support-to-federal-right-to-repair-law/
     url = "https://edition.cnn.com/travel/united-airlines-economy-class-boarding-new-plan/index.html"
     print(get_text_from_article_url(url))
 
