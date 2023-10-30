@@ -1,4 +1,4 @@
-# Contextual Summarization with Retrieval Augmented Generative (RAG) Engine
+# Leveraging RAG Algorithm for Contextual Summarization and Document ChatBot
 ### KaggleX Final Project
 
 ## Table of Contents
