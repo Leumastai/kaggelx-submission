@@ -1,3 +1,6 @@
+---
+driveId: 1jgDt8gSJPxJwLsf6VPrSSL3Uae5it4d4/preview
+---
 # Leveraging RAG Algorithm for Contextual Summarization and Document ChatBot
 ### KaggleX Final Project
 
@@ -112,11 +115,14 @@ To use the Project feature, follow these steps:
    localhost:8501
    ```
 
+## 5. Demo
 
+[Video demo for the project.](https://drive.google.com/file/d/1jgDt8gSJPxJwLsf6VPrSSL3Uae5it4d4/preview)
+{% include googleDrivePlayer.html id=page.driveId %}
 
 ## 5. Data Privacy
 
-We take data privacy seriously. Your uploaded documents and chat data will be securely deleted after 48 hours. We do not store any user data beyond this time frame. For more information on data privacy, please refer to our [Privacy Policy](privacy-policy.md).
+Your uploaded documents and chat data will be securely deleted after 48 hours. We do not store any user data beyond this time frame. For more information on data privacy, please refer to our [Privacy Policy](privacy-policy.md).
 
 ## 6. Contributing
 
