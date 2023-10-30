@@ -1,6 +1,3 @@
----
-driveId: 1jgDt8gSJPxJwLsf6VPrSSL3Uae5it4d4/preview
----
 # Leveraging RAG Algorithm for Contextual Summarization and Document ChatBot
 ### KaggleX Final Project
 
@@ -16,10 +13,11 @@ driveId: 1jgDt8gSJPxJwLsf6VPrSSL3Uae5it4d4/preview
 4. [Usage](#usage)
    1. [Python](#Usage-with-Python)
    2. [Docker compose](#Usage-with-Docker-Compose)
-5. [Data Privacy](#data-privacy)
-6. [Contributing](#contributing)
-7. [License](#license)
-8. [Acknowledgments](#acknowledgments)
+5. [Demo](#Demo)
+6. [Data Privacy](#data-privacy)
+7. [Contributing](#contributing)
+8. [License](#license)
+9. [Acknowledgments](#acknowledgments)
 
 ## 1. Introduction
 Retrieval Augmented Generative (RAG) Engine project! This project combines natural language processing and machine learning to assist users with two key features: Contextual Summarization and Chat with Your Data. This README will provide you with all the information you need to get started and make the most of this project.
@@ -118,21 +116,20 @@ To use the Project feature, follow these steps:
 ## 5. Demo
 
 [Video demo for the project.](https://drive.google.com/file/d/1jgDt8gSJPxJwLsf6VPrSSL3Uae5it4d4/preview)
-{% include googleDrivePlayer.html id=page.driveId %}
 
-## 5. Data Privacy
+## 6. Data Privacy
 
 Your uploaded documents and chat data will be securely deleted after 48 hours. We do not store any user data beyond this time frame. For more information on data privacy, please refer to our [Privacy Policy](privacy-policy.md).
 
-## 6. Contributing
+## 7. Contributing
 
 We welcome contributions from the community. If you'd like to contribute, please check our [Contribution Guidelines](CONTRIBUTING.md).
 
-## 7. License
+## 8. License
 
 This project is licensed under the [MIT License](LICENSE).
 
-## 8. Acknowledgments
+## 9. Acknowledgments
 
 Thanks to KaggleX for creating such a medium and opportunity that enables individuals to communicate, network, and learn. This platform has been instrumental in the development of this project, and I'm are grateful for the resources and community it provides.
 
